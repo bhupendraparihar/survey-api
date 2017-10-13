@@ -1,4 +1,5 @@
 const fs = require('fs');
+let surveyList = JSON.parse(fs.readFileSync("./db/surveys.json"));
 
 function createSurvey(configObj) {
 
@@ -38,13 +39,34 @@ function createSurvey(configObj) {
     return newSurveyObject;
 }
 
+function getSurveyById(survey_id) {
+    return surveyList.filter(function(survey) {
+        return survey.survey_id == survey_id;
+    });
+}
+
 function getSurveyList() {
     let data = fs.readFileSync("./db/surveys.json");
     let surveyList = JSON.parse(data);
     return surveyList;
 }
 
+function getSurveyByMeetingId(meeting_id) {
+    return surveyList.filter(function(survey) {
+        return survey.meeting_id == meeting_id;
+    });
+}
+
+function getSurveysByPresenterId(presenter_id) {
+    return surveyList.filter(function(survey) {
+        return survey.presenter_id == presenter_id;
+    });
+}
+
 module.exports = {
     createSurvey: createSurvey,
-    getSurveyList: getSurveyList
+    getSurveyList: getSurveyList,
+    getSurveyById: getSurveyById,
+    getSurveysByMeetingId: getSurveysByMeetingId,
+    getSurveysByPresenterId: getSurveysByPresenterId
 };

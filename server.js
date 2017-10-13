@@ -34,17 +34,20 @@ router.get('/', function(req, res) {
 
 router.route('/survey/:survey_id')
     .get(function(req, res) {
-        res.send({})
+        let survey = surveyFactory.getSurveyById(req.params.survey_id);
+        res.send(survey);
     });
 
 router.route('/survey/meeting/:meeting_id')
     .get(function(req, res) {
-        res.send({})
+        let surveys = surveyFactory.getSurveysByMeetingId(req.params.meeting_id);
+        res.send(surveys);
     });
 
 router.route('/survey/presenter/:presenter_id')
     .get(function(req, res) {
-        res.send({})
+        let surveys = surveyFactory.getSurveysByPresenterId(req.params.presenter_id);
+        res.send(surveys);
     });
 
 router.route('/survey/latest/meeting/:meeting_id')
