@@ -2,6 +2,9 @@ var express = require('express'); // call express
 var app = express(); // define our app using express
 var bodyParser = require('body-parser');
 
+var surveyFactory = require('./factory/survey_factory.js');
+// var surveysList = surveyFactory.getSurveyList();
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,6 +59,18 @@ router.route('/survey/latest/presenter/:presenter_id')
 
 
 // POST Requests
+
+app.post('/survey/create', function(req, res) {
+    console.log(req.body);
+    try {
+        let surveyObject = surveyFactory.createSurvey(req.body);
+        let surveysList = surveyFactory.getSurveyList();
+        res.send(surveysList);
+    } catch (err) {
+        res.status(500);
+        res.send(err);
+    }
+});
 
 
 // START THE SERVER
