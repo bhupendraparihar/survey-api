@@ -83,11 +83,26 @@ function getLatestSurveyByMeetingId(meeting_id) {
 
 }
 
+function getSubmittedAnswer() {
+    let data = fs.readFileSync("./db/answers.json");
+    let submittedAnswers = JSON.parse(data);
+    return submittedAnswers;
+}
+
+function surveryAnswerSubmit(ansObj) {
+    let submittedAnswers = getSubmittedAnswer();
+    submittedAnswers.push(ansObj);
+
+    fs.writeFileSync("./db/answers.json", JSON.stringify(submittedAnswers), 'utf8');
+    return ansObj;
+}
+
 module.exports = {
     createSurvey: createSurvey,
     getSurveyList: getSurveyList,
     getSurveyById: getSurveyById,
     getSurveysByMeetingId: getSurveysByMeetingId,
     getSurveysByPresenterId: getSurveysByPresenterId,
-    getLatestSurveyByMeetingId: getLatestSurveyByMeetingId
+    getLatestSurveyByMeetingId: getLatestSurveyByMeetingId,
+    surveryAnswerSubmit: surveryAnswerSubmit
 };

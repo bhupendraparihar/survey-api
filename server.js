@@ -76,6 +76,25 @@ app.post('/survey/create', function(req, res) {
     }
 });
 
+/**
+ * { survery_id: "", answer_id:"" , viewer_id: ""}
+ **/
+app.post('/survey/answer', function(req, res) {
+    try {
+        let answerObj = surveyFactory.surveryAnswerSubmit(req.body);
+        res.send(answerObj);
+    } catch (err) {
+        res.status(500);
+        res.send(err);
+    }
+});
+
+app.post('/survey/published/:survey_id', function(req, res) {
+
+});
+
+
+
 
 // START THE SERVER
 // =============================================================================
