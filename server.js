@@ -52,7 +52,8 @@ router.route('/survey/presenter/:presenter_id')
 
 router.route('/survey/latest/meeting/:meeting_id')
     .get(function(req, res) {
-        res.send({})
+        let surveys = surveyFactory.getLatestSurveyByMeetingId(req.params.meeting_id);
+        res.send(surveys);
     });
 
 router.route('/survey/latest/presenter/:presenter_id')

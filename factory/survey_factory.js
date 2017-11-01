@@ -51,7 +51,7 @@ function getSurveyList() {
     return surveyList;
 }
 
-function getSurveyByMeetingId(meeting_id) {
+function getSurveysByMeetingId(meeting_id) {
     return surveyList.filter(function(survey) {
         return survey.meeting_id == meeting_id;
     });
@@ -63,10 +63,31 @@ function getSurveysByPresenterId(presenter_id) {
     });
 }
 
+function getLatestSurveyByMeetingId(meeting_id) {
+
+    latestSurvey = [];
+
+    let surveys = surveyList.filter(function(survey) {
+        return survey.meeting_id == meeting_id && !survey.published && !survey.end;
+    });
+
+    if (surveys.length) {
+        latestSurvey = surveys.reduce(function(prev, current) {
+            return (prev.timeStamp > current.timeStamp) ? prev : current
+        });
+        return latestSurvey;
+    }
+
+    return latestSurvey;
+    // let maxTimeStamp = Math.max.apply(Math,surveys.map(function(o){return o.y;}));
+
+}
+
 module.exports = {
     createSurvey: createSurvey,
     getSurveyList: getSurveyList,
     getSurveyById: getSurveyById,
     getSurveysByMeetingId: getSurveysByMeetingId,
-    getSurveysByPresenterId: getSurveysByPresenterId
+    getSurveysByPresenterId: getSurveysByPresenterId,
+    getLatestSurveyByMeetingId: getLatestSurveyByMeetingId
 };
