@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <section>
+            <div class="poll-list" id="pollListSection">
+                <div class="create-new-button">
+                    <input type="button" value="New" onclick="pollOrganizer.createNewPoll()">
+                </div>
+                <div id="pollListEntries"></div>
+            </div>
+            <div class="create-poll" id="createPollSection">
+                <div class="poll-header"><h2>Create New Poll</h2></div>
+                <div class="poll-statement">
+                    <textarea name="pollStatement" id="pollStatement" cols="30" rows="10" placeholder="Type poll statement"></textarea>
+                </div>
+                <div class="poll-options">
+                    <ul>
+                        <li><input type="text" placeholder="Provide options"></li>
+                        <li><input type="text" placeholder="Provide options"></li>
+                    </ul>
+                </div>
+                <div class="submit-poll">
+                    <input type="button" value="OK" onclick="pollOrganizer.submitNewPoll()">
+                </div>
+            </div>
+            <div class="show-poll" id="showPollSection">
+                <div class="poll-header"><h2>Poll</h2></div>
+                <div class="poll-statement">
+                    
+                </div>
+                <div class="poll-options">
+                    <ul>
+                        <li><input type="text" disabled></li>
+                        <li><input type="text" disabled></li>
+                    </ul>
+                </div>
+                <div class="submit-poll">
+                    <input type="button" value="BACK" onclick="pollOrganizer.showPollList();">
+                </div>
+            </div>
+        </section>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="./script.js"></script>
+    </body>
+</html>
