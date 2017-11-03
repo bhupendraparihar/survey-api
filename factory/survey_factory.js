@@ -35,11 +35,13 @@ function createSurvey(configObj) {
     let surveysList = getSurveyList();
     surveysList.push(newSurveyObject);
     fs.writeFileSync("./db/surveys.json", JSON.stringify(surveysList), 'utf8');
-
-    return newSurveyObject;
+    console.log(surveysList);
+    return surveysList;
 }
 
 function getSurveyById(survey_id) {
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.survey_id == survey_id;
     });
@@ -52,12 +54,16 @@ function getSurveyList() {
 }
 
 function getSurveysByMeetingId(meeting_id) {
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.meeting_id == meeting_id;
     });
 }
 
 function getSurveysByPresenterId(presenter_id) {
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.presenter_id == presenter_id;
     });

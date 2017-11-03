@@ -1,5 +1,14 @@
+var https = require('https');
+
+const fs = require('fs');
+var privateKey = fs.readFileSync('ssl/key.pem', 'utf8');
+var certificate = fs.readFileSync('ssl/cert.pem', 'utf8');
+
+var credentials = { key: privateKey, cert: certificate };
+
 var express = require('express'); // call express
 var app = express(); // define our app using express
+var httpsServer = https.createServer(credentials, app);
 var bodyParser = require('body-parser');
 
 var surveyFactory = require('./factory/survey_factory.js');
@@ -31,6 +40,12 @@ app.use('/api', router);
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
+
+router.route('/survey')
+    .get(function(req, res) {
+        let survey = surveyFactory.getSurveyList();
+        res.send(survey);
+    });
 
 router.route('/survey/:survey_id')
     .get(function(req, res) {
@@ -67,8 +82,8 @@ router.route('/survey/latest/presenter/:presenter_id')
 app.post('/survey/create', function(req, res) {
     console.log(req.body);
     try {
-        let surveyObject = surveyFactory.createSurvey(req.body);
-        let surveysList = surveyFactory.getSurveyList();
+        let surveysList = surveyFactory.createSurvey(req.body);
+
         res.send(surveysList);
     } catch (err) {
         res.status(500);
@@ -98,5 +113,6 @@ app.post('/survey/published/:survey_id', function(req, res) {
 
 // START THE SERVER
 // =============================================================================
-app.listen(port);
+// app.listen(port);
+httpsServer.listen(port);
 console.log('Magic happens on port ' + port);
