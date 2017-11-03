@@ -103,6 +103,55 @@ function surveryAnswerSubmit(ansObj) {
     return ansObj;
 }
 
+function surveryEndPoll(survey_id) {
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
+    surveyList.forEach(function(survey) {
+        if (survey.survey_id == survey_id) {
+            survey.end = true;
+        }
+    });
+    fs.writeFileSync("./db/surveys.json", JSON.stringify(surveyList), 'utf8');
+}
+
+function surveyPublishPoll(survey_id) {
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
+    let publishedSurvey = {};
+    surveyList.forEach(function(survey) {
+        if (survey.survey_id == survey_id) {
+            survey.published = true;
+            publishedSurvey = survey;
+        }
+    });
+    fs.writeFileSync("./db/surveys.json", JSON.stringify(surveyList), 'utf8');
+
+    let answersData = fs.readFileSync("./db/answers.json");
+    let answersJson = JSON.parse(answersData);
+
+    let publishedObj = {};
+
+    answersJson.forEach(function(answer) {
+        if (answer.survey_id == survey_id) {
+            if (publishedObj[answer.answer_id]) {
+                publishedObj[answer.answer_id] += 1;
+            } else {
+                publishedObj[answer.answer_id] = 1;
+            }
+        }
+    });
+
+    let response = [];
+    for (key in publishedObj) {
+        let obj = {
+            text: publishedSurvey.answers.filter((ans) => ans.id == key)[0].text,
+            count: publishedObj[key]
+        }
+        response.push(obj);
+    }
+    return response;
+}
+
 module.exports = {
     createSurvey: createSurvey,
     getSurveyList: getSurveyList,
@@ -110,5 +159,7 @@ module.exports = {
     getSurveysByMeetingId: getSurveysByMeetingId,
     getSurveysByPresenterId: getSurveysByPresenterId,
     getLatestSurveyByMeetingId: getLatestSurveyByMeetingId,
-    surveryAnswerSubmit: surveryAnswerSubmit
+    surveryAnswerSubmit: surveryAnswerSubmit,
+    surveryEndPoll: surveryEndPoll,
+    surveyPublishPoll: surveyPublishPoll
 };

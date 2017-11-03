@@ -104,9 +104,41 @@ app.post('/survey/answer', function(req, res) {
     }
 });
 
-app.post('/survey/published/:survey_id', function(req, res) {
-
+app.post('/survey/end/answer', function(req, res) {
+    try {
+        let answerObj = surveyFactory.surveryAnswerSubmit(req.body);
+        res.send(answerObj);
+    } catch (err) {
+        res.status(500);
+        res.send(err);
+    }
 });
+
+router.route('/survey/end/:survey_id')
+    .post(function(req, res) {
+        try {
+            surveyFactory.surveyEndPoll(req.params.survey_id);
+            res.send({
+                message: "success ended"
+            });
+        } catch (err) {
+            res.status(500);
+            res.send(err);
+        }
+    });
+
+router.route('/survey/publish/:survey_id')
+    .post(function(req, res) {
+        try {
+            var publishedData = surveyFactory.surveyPublishPoll(req.params.survey_id);
+            res.send(publishedData);
+        } catch (err) {
+            res.status(500);
+            res.send(err);
+        }
+    });
+
+
 
 
 
