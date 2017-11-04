@@ -23,7 +23,7 @@ class PollsPanel extends Component {
 	componentDidMount() {
         jQuery('.conferenceroom').hide();
         var config = {
-            isPresenter: false,
+            isPresenter: true,
             presenter_id: "123456",
             meeting_id: "12345R",
         }
