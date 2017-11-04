@@ -1,17 +1,1 @@
-[{
-        "survey_id": "123T1507868285014",
-        "answer_id": "1"
-    },
-    {
-        "survey_id": "123T1507868285014",
-        "answer_id": "1"
-    },
-    {
-        "survey_id": "123T1507868285014",
-        "answer_id": "1"
-    },
-    {
-        "survey_id": "123T1507868285014",
-        "answer_id": "0"
-    }
-]
+[{"survey_id":"123T1507868285014","answer_id":"1"},{"survey_id":"123T1507868285014","answer_id":"1"},{"survey_id":"123T1507868285014","answer_id":"1"},{"survey_id":"123T1507868285014","answer_id":"0"},{"survey_id":"12345RT1509777756257","answer_id":"0"},{"survey_id":"12345RT1509777756257","answer_id":"0"},{"survey_id":"12345RT1509777756257","answer_id":"0"},{"survey_id":"12345RT1509777756257","answer_id":"0"},{"survey_id":"12345RT1509777756257","answer_id":"1"},{"survey_id":"12345RT1509785273625","answer_id":"Yes"},{"survey_id":"12345RT1509786066647","answer_id":"Yes"},{"survey_id":"12345RT1509786066647","answer_id":"Yes"}]

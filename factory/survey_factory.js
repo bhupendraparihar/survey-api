@@ -35,8 +35,8 @@ function createSurvey(configObj) {
     let surveysList = getSurveyList();
     surveysList.push(newSurveyObject);
     fs.writeFileSync("./db/surveys.json", JSON.stringify(surveysList), 'utf8');
-    console.log(surveysList);
-    return surveysList;
+    console.log(getSurveysByMeetingId(configObj.meeting_id));
+    return getSurveysByMeetingId(configObj.meeting_id);
 }
 
 function getSurveyById(survey_id) {
@@ -72,7 +72,8 @@ function getSurveysByPresenterId(presenter_id) {
 function getLatestSurveyByMeetingId(meeting_id) {
 
     latestSurvey = [];
-
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
     let surveys = surveyList.filter(function(survey) {
         return survey.meeting_id == meeting_id && !survey.published && !survey.end;
     });
@@ -96,14 +97,24 @@ function getSubmittedAnswer() {
 }
 
 function surveryAnswerSubmit(ansObj) {
-    let submittedAnswers = getSubmittedAnswer();
-    submittedAnswers.push(ansObj);
+    let data = fs.readFileSync("./db/surveys.json");
+    let surveyList = JSON.parse(data);
+    surveyList = surveyList.filter(function(survey) {
+        return survey.survey_id == ansObj.survey_id && !survey.end;
+    });
+    if (surveyList.length) {
+        let submittedAnswers = getSubmittedAnswer();
+        submittedAnswers.push(ansObj);
 
-    fs.writeFileSync("./db/answers.json", JSON.stringify(submittedAnswers), 'utf8');
-    return ansObj;
+        fs.writeFileSync("./db/answers.json", JSON.stringify(submittedAnswers), 'utf8');
+        return ansObj;
+    }
+
+    return { "message": "Already answered" };
+
 }
 
-function surveryEndPoll(survey_id) {
+function surveyEndPoll(survey_id) {
     let data = fs.readFileSync("./db/surveys.json");
     let surveyList = JSON.parse(data);
     surveyList.forEach(function(survey) {
@@ -160,6 +171,6 @@ module.exports = {
     getSurveysByPresenterId: getSurveysByPresenterId,
     getLatestSurveyByMeetingId: getLatestSurveyByMeetingId,
     surveryAnswerSubmit: surveryAnswerSubmit,
-    surveryEndPoll: surveryEndPoll,
+    surveyEndPoll: surveyEndPoll,
     surveyPublishPoll: surveyPublishPoll
 };

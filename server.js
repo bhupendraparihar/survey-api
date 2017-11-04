@@ -94,25 +94,16 @@ app.post('/survey/create', function(req, res) {
 /**
  * { survery_id: "", answer_id:"" , viewer_id: ""}
  **/
-app.post('/survey/answer', function(req, res) {
-    try {
-        let answerObj = surveyFactory.surveryAnswerSubmit(req.body);
-        res.send(answerObj);
-    } catch (err) {
-        res.status(500);
-        res.send(err);
-    }
-});
-
-app.post('/survey/end/answer', function(req, res) {
-    try {
-        let answerObj = surveyFactory.surveryAnswerSubmit(req.body);
-        res.send(answerObj);
-    } catch (err) {
-        res.status(500);
-        res.send(err);
-    }
-});
+router.route('/survey/answer')
+    .post(function(req, res) {
+        try {
+            let answerObj = surveyFactory.surveryAnswerSubmit(req.body);
+            res.send(answerObj);
+        } catch (err) {
+            res.status(500);
+            res.send(err);
+        }
+    });
 
 router.route('/survey/end/:survey_id')
     .post(function(req, res) {
