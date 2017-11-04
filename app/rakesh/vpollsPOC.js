@@ -61,7 +61,9 @@ var pollOrganizer = (function() {
                     this.displaySectionById('pollListSection');
                 } else {
                     this.displaySectionById('pollViewer');
-                    this.getLivePoll();
+                    $('#pollViewer').hide();
+                    //this.getLivePoll();
+                    pollContext.getPollTimer = setInterval(pollContext.getLivePoll, 5000);
                 }
             },
             cacheElements: function() {
@@ -143,17 +145,7 @@ var pollOrganizer = (function() {
                 var that = this;
                 var i = 0;
                 $(that.pollListElement).html('');
-                // if (pollListData) {
-                //     pollListData.forEach(function(poll) {
-                //         var row = $('<tr><td data-id="' + poll.survey_id + '" data-end="' + poll.end + '>' + 
-                //             poll.question + '</td></tr>');
-                //         row.click(function () {
-                //             that.showPollDetailsByPollId(poll.survey_id, {end: poll.end});
-                //         });
-                    
-                //         $(that.pollListElement).append(row);
-                //     });
-                // } else {
+             
                     var getPolls = this.getallPollsFromServer(pollContext.config.meeting_id);
     
                     // this.pollListElement.innerHTML = '';
@@ -283,8 +275,8 @@ var pollOrganizer = (function() {
             getLivePoll : function() {
                 var meetingId = "12345R";
                 var self = this;
-                $('#pollViewer').hide();
-                this.optionsLables = $('.poll-viewer .option-text') ;
+                
+                pollContext.optionsLables = $('.poll-viewer .option-text') ;
                 //Call service method get poll
                 var livePoll =  $.ajax ({
                     type: 'GET',
@@ -292,40 +284,44 @@ var pollOrganizer = (function() {
                 });
      
                 livePoll.then (function (poll) {
-                    var localPollData = JSON.parse(localStorage.getItem(poll.survey_id));
-                    if ((poll && pollContext.pollData && pollContext.pollData.survey_id === poll.survey_id) && (localPollData && localPollData.survey_id === poll.survey_id))
+                    var localPollData = localStorage.getItem(poll.survey_id);
+                    //Content alreay displayed or alredy answered
+                    if (pollContext.pollData  || localPollData)
                         {
-                        pollContext.getPollTimer = setInterval(pollContext.getLivePoll, 5000);
+                        //pollContext.getPollTimer = setInterval(pollContext.getLivePoll, 5000);
                         return;
                     }
                     
+                    //Data to display
                     if (poll) {
                        pollContext.pollData = poll;
                        clearInterval(pollContext.getPollTimer);
                        $('#pollViewer').show();
-                       $('input[name=pollOption]').attr('checked',false);
                        pollContext.pollQuestion.innerText  = poll.question;
                        poll.answers.forEach(function (answer, index) {
                            pollContext.optionsLables[index].innerText = answer.text;
                            pollContext.optionsLables[index].value = answer.id;                
                        });
-                    } else {                        
-                        pollContext.getPollTimer = setInterval(pollContext.getLivePoll, 5000);   
+                       $('input[name=pollOption].poll-option1').prop('checked',true)
                     }
+                    
                    
+                },function(err){
+                    console.error("Error while getting latest survey");
                 });
             },
             submitPoll : function() {
-                var data = {
-                    survey_id: 123456
-                };
-     
+                var data = {};
                 var answer, self= this;
+
                 if (pollOption1.checked) {
                     answer = lblOption1.value;
                 } else if (pollOption2.checked) {
                     answer = lblOption2.value;
+                }else{
+                    return;
                 }
+
                 data.answer_id = answer;                
                 data.survey_id = pollContext.pollData.survey_id;
                 var pollSubmit =  $.ajax ({
@@ -336,16 +332,22 @@ var pollOrganizer = (function() {
      
                 pollSubmit.then (function (message) {
                    // $('input[name=pollOption]').attr('checked',false);
+                    
                     $('#pollViewer').hide();
                     alert(message.message);              
                     console.info('Successfully submitted poll');
+
+                    //Call Service method to submit the poll
+                    localStorage.setItem(pollContext.pollData.survey_id, pollContext.pollData.survey_id);
+                    pollContext.pollData = "";
+
+                    //Restart the ajax call
                     pollContext.getPollTimer = setInterval(pollContext.getLivePoll, 5000);          
                 }, function (err) {
                     console.error('Could not submit poll');
                 });
      
-                //Call Service method to submit the poll
-                localStorage.setItem(pollContext.pollData.survey_id, JSON.stringify(pollContext.pollData));
+                
             },
             postNewPollToServer: postNewPollToServer,
             getallPollsFromServer: getallPollsFromServer,
