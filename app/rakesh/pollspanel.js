@@ -95,6 +95,7 @@ class PollsPanel extends Component {
                                 <span className="end-poll btn btn-default" id="endPollButton" onClick={pollOrganizer.endPoll}>End Poll</span>
                                 <span className="btn btn-default" onClick={pollOrganizer.showPollList}>Back</span>
                             </div>
+                            <div className="poll-result" id="pollResult"></div>
                     </div>
                     <div className="poll-viewer" id="pollViewer">
                         <div>

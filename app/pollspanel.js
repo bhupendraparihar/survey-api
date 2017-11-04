@@ -22,7 +22,7 @@ class PollsPanel extends Component {
 
 	componentDidMount() {
         var config = {
-            isPresenter: true,
+            isPresenter: false,
             presenter_id: "123456",
             meeting_id: "12345R",
         }
@@ -68,58 +68,54 @@ class PollsPanel extends Component {
                         </div>
                         <table id="pollListEntries" className="table"></table>
                     </div>
-                    <div className="create-poll" id="createPollSection">
-                        <div className="poll-header">Create New Poll</div>
-                        <div className="poll-statement">
-                            <textarea name="pollStatement" id="pollStatement" cols="30" rows="10" placeholder="Type poll statement"></textarea>
+                        <div className="create-poll" id="createPollSection">
+                            <div className="poll-header">Create New Poll</div>
+                            <div className="poll-statement">
+                                <textarea name="pollStatement" id="pollStatement" cols="30" rows="10" placeholder="Type poll statement"></textarea>
+                            </div>
+                            <div className="poll-options">
+                                <div>Option 1:<input type="text" placeholder="Provide options"/></div>
+                                <div>Option 2:<input type="text" placeholder="Provide options"/></div>
+                            </div>
+                            <div className="submit-poll">
+                                <span className="btn btn-default" onClick={pollOrganizer.submitNewPoll}>Submit</span>
+                                <span className="btn btn-default" onClick={pollOrganizer.cancelNewPoll}>Cancel</span>
+                            </div>
                         </div>
-                        <div className="poll-options">
-                            <div>Option 1:<input type="text" placeholder="Provide options"/></div>
-                            <div>Option 2:<input type="text" placeholder="Provide options"/></div>
-                        </div>
-                        <div className="submit-poll">
-                            <span className="btn btn-default" onClick={pollOrganizer.submitNewPoll}>Submit</span>
-                            <span className="btn btn-default" onClick={pollOrganizer.cancelNewPoll}>Cancel</span>
-                        </div>
+                        <div className="show-poll" id="showPollSection">
+                            <div className="poll-header">Poll Details</div>
+                            <div className="poll-statement"></div>
+                            <div className="poll-options">
+                                <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>
+                            <div className="submit-poll">
+                                <span className="end-poll btn btn-default" id="endPollButton" onClick={pollOrganizer.endPoll}>End Poll</span>
+                                <span className="btn btn-default" onClick={pollOrganizer.showPollList}>Back</span>
+                            </div>
+                            <div className="poll-result" id="pollResult"></div>
                     </div>
-                    <div className="show-poll" id="showPollSection">
-                        <div className="poll-header">Poll Details</div>
-                        <div className="poll-statement"></div>
-                        <div className="poll-options">
-                            <ul>
-                                <li></li>
-                                <li></li>
-                            </ul>
-                        </div>
-                        <div className="submit-poll">
-                            <span className="end-poll btn btn-default" id="endPollButton" onClick={pollOrganizer.endPoll}>End Poll</span>
-                            <span className="btn btn-default" onClick={pollOrganizer.showPollList}>Back</span>
-                        </div>
-                        <div className="poll-result" id="pollResult"></div>
-                    </div>
-                </section>
-                <section id="pollViewer">
-                    <div className="poll-viewer" id="pollViewerSection">
+                    <div className="poll-viewer" id="pollViewer">
                         <div>
                             <label className = "poll-question" id ="pollQuestion">Question</label>
                         </div>
                         <div className="poll-options">
-                            <ul>
-                                <li>
-                                    <input type="radio" name = "option1" id ="pollOption1" className = "poll-option1" value ="Yes"/>
-                                    <label id ="lblOption1" className="option-text"></label>
-                                </li>
-                                <li>
-                                    <input type="radio" name = "option2" id ="rdoOption2" className = "poll-option2" value="No"/>
-                                    <label id ="lblOption2" className="option-text"></label>
-                                </li>
-                            </ul>
+                            <div>
+                                <input type="radio" name = "pollOption" id ="pollOption1" className = "poll-option1" value ="Yes"/>
+                                <label id ="lblOption1" className="option-text"></label>
+                            </div>
+                            <div>
+                                <input type="radio" name = "pollOption" id ="pollOption2" className = "poll-option2" value="No"/>
+                                <label id ="lblOption2" className="option-text"></label>
+                            </div>
                         </div>                
                         <div>
                             <input type="button" value="Save"   className="submit-poll" id ="btnSubmit" />
                         </div>
                     </div>
-                </section>
+                </section>                
             </div>
         );
     }

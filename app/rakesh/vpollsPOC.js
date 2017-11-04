@@ -71,7 +71,8 @@ var pollOrganizer = (function() {
                 this.createPollsBtn = $('.create-new-btn');
                 this.pollListSection = document.getElementById('pollListSection');
                 this.showPollSection = document.getElementById('showPollSection');
-                this.pollViewer = document.getElementById('pollViewer');                
+                this.pollViewer = document.getElementById('pollViewer');
+                this.pollViewerSection = document.getElementById('pollViewerSection');
                 this.pollQuestion = document.getElementById('pollQuestion');
                 this.lblOption1 = document.getElementById('lblOption1');
                 this.lblOption2 = document.getElementById('lblOption2');
@@ -79,20 +80,10 @@ var pollOrganizer = (function() {
                 this.pollOption2 = document.getElementById('pollOption2');
                 this.btnSubmit = document.getElementById('btnSubmit');
                 this.endPollButton = document.getElementById('endPollButton');
+                this.pollResult = document.getElementById('pollResult');
             },
             bindEvents: function() {
                 var that = this;
-                // this.pollListElement.addEventListener("click", function(e) {
-                //     if (e.target.nodeName == 'TD') {
-                //         var survey_id = e.target.getAttribute('data-id');
-                //         that.showPollDetailsByPollId(survey_id);
-                //     }
-                // });
-
-                // this.createPollsBtn.on("click", function(){
-                //     that.createNewPoll();
-                // });
-
                 this.btnSubmit.addEventListener("click", this.submitPoll);
             },
             setConfiguation: function(config) {
@@ -126,6 +117,7 @@ var pollOrganizer = (function() {
                     case 'showPollSection':
                         {
                             this.showPollSection.style.display = 'block';
+                            this.pollResult.style.display = 'none';
                             break;
                         }
                     case 'pollViewer':
@@ -256,7 +248,7 @@ var pollOrganizer = (function() {
             },
             endPoll: function () {
                 var pollId = $('#showPollSection .poll-statement').attr('data-id');
-                if($('#endPollButton').html() == 'End Poll'){
+                if ($('#endPollButton').html() == 'End Poll'){
                     var pollEnd = sendPollEndToServer(pollId);
                     pollEnd.then(function(message){
                         console.log(message);
@@ -264,7 +256,7 @@ var pollOrganizer = (function() {
                     },function(err){
                         console.log(err);
                     });
-                }else{
+                } else {
                     /**
                     * This will publish the poll and get results
                     */
@@ -272,11 +264,16 @@ var pollOrganizer = (function() {
                     pollEnd.then(function(message){
                         console.log(message);
                         var result = '';
-                        message.forEach(function(m){
-                            result += ' ' + m.text + ':' + m.count;
-                        });
-                        alert(result);
-                        pollContext.showPollList();
+                        pollContext.pollResult.style.display = 'block';
+                        pollContext.pollResult.innerHTML = '';
+                        if (!message.length) {
+                            pollContext.pollResult.innerHTML = '<div class="poll-result-failure">No results available for this poll</div>';
+                        } else {
+                            pollContext.pollResult.innerHTML += '<div class="poll-result-success-header">Poll Results</div>';
+                            message.forEach(function(m){
+                                pollContext.pollResult.innerHTML += '<div><span class="text"> ' + m.text + '</span><span class="count"> : ' + m.count + '</span></div>';
+                            });
+                        }
                     },function(err){
                         console.log(err);
                         alert("Error while getting poll results");
