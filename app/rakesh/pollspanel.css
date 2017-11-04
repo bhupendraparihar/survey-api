@@ -66,3 +66,39 @@
 #poll-list-app #pollViewer{
     display: none;
 }
+#pollListEntries td:hover {
+    cursor: default;
+    color: #0074ce;
+}
+#pollViewer .poll-options label {
+    padding-left: 8px;
+    vertical-align: top;
+    font-size: 15px;
+    font-weight: 500;
+    max-width: 290px;
+    word-wrap: break-word;
+    max-height: 61px;
+    overflow: auto;
+}
+#pollViewer .poll-question {
+    font-size: 16px;
+    font-weight: 600;
+    overflow: auto;
+    max-height: 100px;
+}
+#pollViewer .submit-poll {
+    text-align: center;
+    padding: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+#showPollSection .poll-statement {
+    font-size: 15px;
+    margin-top: 5px;
+    max-width: 290px;
+    max-height: 100px;
+    word-wrap: break-word;
+    overflow: auto;
+    font-weight: 400;
+}
