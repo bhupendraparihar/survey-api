@@ -71,7 +71,7 @@ function getSurveysByPresenterId(presenter_id) {
 
 function getLatestSurveyByMeetingId(meeting_id) {
 
-    latestSurvey = [];
+    let latestSurvey;
     let data = fs.readFileSync("./db/surveys.json");
     let surveyList = JSON.parse(data);
     let surveys = surveyList.filter(function(survey) {
@@ -85,8 +85,7 @@ function getLatestSurveyByMeetingId(meeting_id) {
         return latestSurvey;
     }
 
-    return latestSurvey;
-    // let maxTimeStamp = Math.max.apply(Math,surveys.map(function(o){return o.y;}));
+    return null;
 
 }
 
@@ -107,10 +106,12 @@ function surveryAnswerSubmit(ansObj) {
         submittedAnswers.push(ansObj);
 
         fs.writeFileSync("./db/answers.json", JSON.stringify(submittedAnswers), 'utf8');
-        return ansObj;
+        return {
+            "message": "Successfuly submitted the answer"
+        };
     }
 
-    return { "message": "Already answered" };
+    return { "message": "Poll already ended" };
 
 }
 
