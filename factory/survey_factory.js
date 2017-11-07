@@ -1,5 +1,15 @@
 const fs = require('fs');
-let surveyList = JSON.parse(fs.readFileSync("./db/surveys.json"));
+
+let surveyList = [];
+let answerList = [];
+
+function loadData(){
+    let data = fs.readFileSync("./db/surveys.json");
+    surveyList = JSON.parse(data);
+
+    let answerData = fs.readFileSync("./db/answers.json");
+    answerList = JSON.parse(answerData);
+}
 
 function createSurvey(configObj) {
 
@@ -32,16 +42,17 @@ function createSurvey(configObj) {
         end: false
     }
 
-    let surveysList = getSurveyList();
-    surveysList.push(newSurveyObject);
-    fs.writeFileSync("./db/surveys.json", JSON.stringify(surveysList), 'utf8');
+    // let surveysList = getSurveyList();
+
+    surveyList.push(newSurveyObject);
+    fs.writeFileSync("./db/surveys.json", JSON.stringify(surveyList), 'utf8');
     console.log(getSurveysByMeetingId(configObj.meeting_id));
     return getSurveysByMeetingId(configObj.meeting_id);
 }
 
 function getSurveyById(survey_id) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.survey_id == survey_id;
     });
@@ -54,16 +65,16 @@ function getSurveyList() {
 }
 
 function getSurveysByMeetingId(meeting_id) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.meeting_id == meeting_id;
     });
 }
 
 function getSurveysByPresenterId(presenter_id) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     return surveyList.filter(function(survey) {
         return survey.presenter_id == presenter_id;
     });
@@ -72,8 +83,8 @@ function getSurveysByPresenterId(presenter_id) {
 function getLatestSurveyByMeetingId(meeting_id) {
 
     let latestSurvey;
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     let surveys = surveyList.filter(function(survey) {
         return survey.meeting_id == meeting_id && !survey.published && !survey.end;
     });
@@ -96,16 +107,20 @@ function getSubmittedAnswer() {
 }
 
 function surveryAnswerSubmit(ansObj) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
-    surveyList = surveyList.filter(function(survey) {
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
+    
+    // Get the survey for which the answer need to be submitted
+    let matchedSurveyList = surveyList.filter(function(survey) {
         return survey.survey_id == ansObj.survey_id && !survey.end;
     });
-    if (surveyList.length) {
-        let submittedAnswers = getSubmittedAnswer();
-        submittedAnswers.push(ansObj);
 
-        fs.writeFileSync("./db/answers.json", JSON.stringify(submittedAnswers), 'utf8');
+    //If submitted answer survey id is valid
+    if (matchedSurveyList.length) {
+        //let submittedAnswers = answerList; //getSubmittedAnswer();
+        answerList.push(ansObj);
+
+        fs.writeFileSync("./db/answers.json", JSON.stringify(answerList), 'utf8');
         return {
             "message": "Successfuly submitted the answer"
         };
@@ -116,8 +131,8 @@ function surveryAnswerSubmit(ansObj) {
 }
 
 function surveyEndPoll(survey_id) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     surveyList.forEach(function(survey) {
         if (survey.survey_id == survey_id) {
             survey.end = true;
@@ -127,8 +142,8 @@ function surveyEndPoll(survey_id) {
 }
 
 function surveyPublishPoll(survey_id) {
-    let data = fs.readFileSync("./db/surveys.json");
-    let surveyList = JSON.parse(data);
+    // let data = fs.readFileSync("./db/surveys.json");
+    // let surveyList = JSON.parse(data);
     let publishedSurvey = {};
     surveyList.forEach(function(survey) {
         if (survey.survey_id == survey_id) {
@@ -138,12 +153,12 @@ function surveyPublishPoll(survey_id) {
     });
     fs.writeFileSync("./db/surveys.json", JSON.stringify(surveyList), 'utf8');
 
-    let answersData = fs.readFileSync("./db/answers.json");
-    let answersJson = JSON.parse(answersData);
+    // let answersData = fs.readFileSync("./db/answers.json");
+    // let answersJson = JSON.parse(answersData);
 
     let publishedObj = {};
 
-    answersJson.forEach(function(answer) {
+    answerList.forEach(function(answer) {
         if (answer.survey_id == survey_id) {
             if (publishedObj[answer.answer_id]) {
                 publishedObj[answer.answer_id] += 1;
@@ -164,7 +179,15 @@ function surveyPublishPoll(survey_id) {
     return response;
 }
 
+function emptySurveyAnswers(){
+    surveyList = [];
+    answerList = [];
+    fs.writeFileSync("./db/surveys.json", JSON.stringify(surveyList), 'utf8');
+    fs.writeFileSync("./db/answers.json", JSON.stringify(answerList), 'utf8');
+}
+
 module.exports = {
+    loadData:loadData,
     createSurvey: createSurvey,
     getSurveyList: getSurveyList,
     getSurveyById: getSurveyById,
@@ -173,5 +196,6 @@ module.exports = {
     getLatestSurveyByMeetingId: getLatestSurveyByMeetingId,
     surveryAnswerSubmit: surveryAnswerSubmit,
     surveyEndPoll: surveyEndPoll,
-    surveyPublishPoll: surveyPublishPoll
+    surveyPublishPoll: surveyPublishPoll,
+    emptySurveyAnswers: emptySurveyAnswers
 };

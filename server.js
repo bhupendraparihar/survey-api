@@ -76,20 +76,29 @@ router.route('/survey/latest/presenter/:presenter_id')
         res.send({})
     });
 
+router.route('/survey/empty/:admin_id')
+    .get(function(req, res) {
+        if(req.params.admin_id == "bhupendra"){
+            surveyFactory.emptySurveyAnswers();
+            res.send({"message": "Successfully Deleted the records"});
+        }
+        res.send({"message": "Wrong Admin Id"});
+    });
+
 
 // POST Requests
+router.route('/survey/create')
+    .post(function(req, res) {
+        console.log(req.body);
+        try {
+            let surveysList = surveyFactory.createSurvey(req.body);
 
-app.post('/survey/create', function(req, res) {
-    console.log(req.body);
-    try {
-        let surveysList = surveyFactory.createSurvey(req.body);
-
-        res.send(surveysList);
-    } catch (err) {
-        res.status(500);
-        res.send(err);
-    }
-});
+            res.send(surveysList);
+        } catch (err) {
+            res.status(500);
+            res.send(err);
+        }
+    });
 
 /**
  * { survery_id: "", answer_id:"" , viewer_id: ""}
@@ -131,8 +140,8 @@ router.route('/survey/publish/:survey_id')
 
 
 
-
-
+//Load the surveys and answers in in-memory before server starts
+surveyFactory.loadData();
 
 // START THE SERVER
 // =============================================================================
